@@ -7,11 +7,8 @@ export const tokenForUser = function(user) {
 }
 
 exports.signin = function (req, res, next) {
-  User.findOne({
-    username: req.body.username
-  }, function(err, user) {
-    if (err) throw err;
-
+  User.findOne({username: req.body.username})
+  .then(user => {
     if (!user) {
       res.status(401).send({error: 'Authentication failed. User not found.'});
     } else {
@@ -23,7 +20,8 @@ exports.signin = function (req, res, next) {
         }
       });
     }
-  });
+  })
+  .catch(err => {throw err;});
 }
 
 exports.signup = function (req, res, next) {
@@ -35,12 +33,15 @@ exports.signup = function (req, res, next) {
   } else {
     const user = new User({username, password});
 
-    user.save(function (err) {
-      if (err) {
-        return res.status(401).send({error: 'Username already exists.'})
-      }
-      res.json({success: true, msg: 'Successful created new user.'});
-    });
+    user.save()
+    .then(() => res.json({success: true, msg: 'Successful created new user.'}))
+    .catch((err) => res.status(401).send({error: 'Username already exists.'}));
 
   };
+}
+
+exports.list = function (req, res, next) {
+  User.find({}, "-password").then((list) => {
+    res.json({success: true, list: list.map(item => {return {id: item.id, username: item.username}})});
+  })
 }

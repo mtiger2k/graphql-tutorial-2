@@ -9,5 +9,6 @@ module.exports = function (app) {
 
   app.post('/signup', User.signup);
   app.post('/signin', User.signin);
+  app.get('/list', requireAuth, User.list);
 
 }
