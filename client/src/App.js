@@ -17,6 +17,8 @@ import NotFound from './components/NotFound';
 import ChannelDetails from './components/ChannelDetails';
 import ChannelsListWithData from './components/ChannelsListWithData';
 
+const PORT = 4000;
+
 function dataIdFromObject(result) {
   if (result.__typename) {
     if (result.id !== undefined) {
@@ -44,12 +46,12 @@ const cache = new InMemoryCache({
 
 // Create an http link:
 const httpLink = new HttpLink({
-  uri: 'http://localhost:4000/graphql'
+  uri: `http://localhost:${PORT}/graphql`
 });
 
 // Create a WebSocket link:
 const wsLink = new WebSocketLink({
-  uri: `ws://localhost:4000/subscriptions`,
+  uri: `ws://localhost:${PORT}/subscriptions`,
   options: {
     reconnect: true
   }

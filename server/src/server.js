@@ -3,19 +3,39 @@ import bodyParser from 'body-parser';
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
 import { makeExecutableSchema } from 'graphql-tools';
 import cors from 'cors';
-import { resolvers } from './resolvers';
-import { typeDefs } from './typeDefs';
 
 import { execute, subscribe } from 'graphql';
 import { createServer } from 'http';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
 
-const schema = makeExecutableSchema({ typeDefs, resolvers });
-const PORT = 4000;
+import passport from 'passport';
+import mongoose from 'mongoose';
+
+//const schema = makeExecutableSchema({ typeDefs, resolvers });
+import schema from './schema';
+
+// init config
+require('dotenv').config();
+
+// config passport
+const configPassport = require('./services/passport');
+configPassport(passport);
+
+// init mongo
+const mongoUri = process.env.MONGODB_URL || 'mongodb://localhost/graphql-tutorial'
+mongoose.Promise = require('bluebird');
+mongoose.connect(mongoUri);
+
+const PORT = process.env.SERVER_PORT || 4000;
 
 const server = express();
 server.use('*', cors({ origin: 'http://localhost:3000' }));
-server.use('/graphql', bodyParser.json(), graphqlExpress({ schema: schema }));
+server.use(bodyParser.json())
+
+// router
+require('./router')(server);
+
+server.use('/graphql', graphqlExpress({ schema: schema }));
 server.get(
   '/graphiql',
   graphiqlExpress({
