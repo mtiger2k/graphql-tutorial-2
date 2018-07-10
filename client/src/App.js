@@ -12,10 +12,15 @@ import { WebSocketLink } from 'apollo-link-ws';
 import { getMainDefinition } from 'apollo-utilities';
 
 import logo from './logo.svg';
-import './App.css';
+//import './App.css';
 import NotFound from './components/NotFound';
 import ChannelDetails from './components/ChannelDetails';
 import ChannelsListWithData from './components/ChannelsListWithData';
+
+import { Provider } from 'react-redux'
+import { ConnectedRouter } from 'connected-react-router'
+import store, { history } from './store'
+import MainApp from './containers/app'
 
 const PORT = 4000;
 
@@ -71,7 +76,7 @@ const client = new ApolloClient({
   cache
 });
 
-class App extends Component {
+class App_bk extends Component {
   render() {
     return (
       <ApolloProvider client={client}>
@@ -88,6 +93,22 @@ class App extends Component {
           </div>
         </BrowserRouter>
       </ApolloProvider>
+    );
+  }
+}
+
+class App extends Component {
+  render() {
+    return (
+        <Provider store={store}>
+          <ApolloProvider client={client}>
+            <ConnectedRouter history={history}>
+              <div>
+                <MainApp />
+              </div>
+            </ConnectedRouter>
+          </ApolloProvider>
+        </Provider>
     );
   }
 }
