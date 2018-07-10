@@ -12,7 +12,7 @@ import { WebSocketLink } from 'apollo-link-ws';
 import { getMainDefinition } from 'apollo-utilities';
 
 import logo from './logo.svg';
-//import './App.css';
+import './App.css';
 import NotFound from './components/NotFound';
 import ChannelDetails from './components/ChannelDetails';
 import ChannelsListWithData from './components/ChannelsListWithData';
@@ -21,6 +21,7 @@ import { Provider } from 'react-redux'
 import { ConnectedRouter } from 'connected-react-router'
 import store, { history } from './store'
 import MainApp from './containers/app'
+import { ReduxCache } from 'apollo-cache-redux';
 
 const PORT = 4000;
 
@@ -33,7 +34,8 @@ function dataIdFromObject(result) {
   return null;
 }
 
-const cache = new InMemoryCache({
+//const cache = new InMemoryCache({
+const cache = new ReduxCache({ store,
   dataIdFromObject,
   cacheResolvers: {
     Query: {
@@ -76,11 +78,12 @@ const client = new ApolloClient({
   cache
 });
 
-class App_bk extends Component {
+class App extends Component {
   render() {
     return (
+      <Provider store={store}>
       <ApolloProvider client={client}>
-        <BrowserRouter>
+        <ConnectedRouter history={history}>
           <div className="App">
             <Link to="/" className="navbar">
               React + GraphQL Tutorial
@@ -91,13 +94,14 @@ class App_bk extends Component {
               <Route component={NotFound} />
             </Switch>
           </div>
-        </BrowserRouter>
+        </ConnectedRouter>
       </ApolloProvider>
+      </Provider>
     );
   }
 }
 
-class App extends Component {
+class App_bk extends Component {
   render() {
     return (
         <Provider store={store}>
