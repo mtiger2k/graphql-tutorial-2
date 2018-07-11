@@ -12,7 +12,6 @@ import { WebSocketLink } from 'apollo-link-ws';
 import { getMainDefinition } from 'apollo-utilities';
 
 import logo from './logo.svg';
-import './App.css';
 import NotFound from './components/NotFound';
 import ChannelDetails from './components/ChannelDetails';
 import ChannelsListWithData from './components/ChannelsListWithData';
@@ -20,8 +19,27 @@ import ChannelsListWithData from './components/ChannelsListWithData';
 import { Provider } from 'react-redux'
 import { ConnectedRouter } from 'connected-react-router'
 import store, { history } from './store'
-import MainApp from './containers/app'
 import { ReduxCache } from 'apollo-cache-redux';
+
+import MainApp from './containers/app'
+
+// Styles
+// CoreUI Icons Set
+import '@coreui/icons/css/coreui-icons.min.css';
+// Import Flag Icons Set
+import 'flag-icon-css/css/flag-icon.min.css';
+// Import Font Awesome Icons Set
+import 'font-awesome/css/font-awesome.min.css';
+// Import Simple Line Icons Set
+import 'simple-line-icons/css/simple-line-icons.css';
+// Import Main styles for this application
+import './scss/style.css'
+//import './App.css';
+
+// Containers
+import { DefaultLayout } from './layout';
+// Pages
+import { Login, Page404, Page500, Register } from './views/Pages';
 
 const PORT = 4000;
 
@@ -84,6 +102,26 @@ class App extends Component {
       <Provider store={store}>
       <ApolloProvider client={client}>
         <ConnectedRouter history={history}>
+          <Switch>
+            <Route exact path="/login" name="Login Page" component={Login} />
+            <Route exact path="/register" name="Register Page" component={Register} />
+            <Route exact path="/404" name="Page 404" component={Page404} />
+            <Route exact path="/500" name="Page 500" component={Page500} />
+            <Route path="/" name="Home" component={DefaultLayout} />
+          </Switch>
+        </ConnectedRouter>
+      </ApolloProvider>
+      </Provider>
+    );
+  }
+}
+
+class App_graphql extends Component {
+  render() {
+    return (
+      <Provider store={store}>
+      <ApolloProvider client={client}>
+        <ConnectedRouter history={history}>
           <div className="App">
             <Link to="/" className="navbar">
               React + GraphQL Tutorial
@@ -101,7 +139,7 @@ class App extends Component {
   }
 }
 
-class App_bk extends Component {
+class App_redux extends Component {
   render() {
     return (
         <Provider store={store}>
